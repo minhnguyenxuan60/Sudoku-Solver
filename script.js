@@ -13,9 +13,6 @@ for (let i = 0; i < 9; i++) {
     line.classList = 'line'
     for (let j = 0; j < 9; j++) {
         const cell = document.createElement('input');
-        cell.setAttribute('type','number');
-        cell.setAttribute('min',"1");
-        cell.setAttribute('max',"9");
         cell.setAttribute('maxlength',1 );
         cell.classList.add('cell');
         line.appendChild(cell);
@@ -30,6 +27,7 @@ reset_btn.addEventListener('click', () => {
     for (let i = 0; i < 9; i++) {
         for (let j = 0; j < 9; j++) {
             board[i][j].value="";
+            board[i][j].style.color = 'black';
         }
     }
 })
@@ -58,7 +56,6 @@ function bitCount (n) {
 }
 
 function iterate() {
-    console.log("running");
     if (found) return;
     if (st.size == 0) {
         found = true;
@@ -79,6 +76,7 @@ function iterate() {
     for (let val = 1; val < 10; val++) {
         if (num & (1 << val)) {
             board[curi][curj].value = val;
+            board[curi][curj].style.color = 'red';
             change(curi, curj, val);
             st.delete(hash(curi, curj));
             iterate();
@@ -115,10 +113,35 @@ function initialize() {
     }
 }
 
+// Check for conflict
+function isValid() {
+    for (let i = 0; i < 9; i++) {
+        for (let j = 0; j < 9; j++) {
+            if (board[i][j].value == '') continue;
+            for (let k = 0; k < 9; k++) {
+                for (let l = 0; l < 9; l++) {
+                    if (board[k][l].value == '') continue;
+                    if (i == k && j == l) continue;
+                    if(board[i][j].value == board[k][l].value) { 
+                        if (i == k || j == l || 
+                            (Math.floor(i / 3) == Math.floor(k / 3) && 
+                            Math.floor(j / 3) == Math.floor(l / 3))) {
+                            alert("Input conflict at cell ("+(i+1)+","+(j+1)+") and ("+(k+1)+","+(l+1)+")");
+                            return false;
+                        }
+                    }
+                }
+            }
+        }
+    }
+    return true;
+}
 //get the input from the board and solve the puzzle
 solve_btn = document.querySelector('.solve-btn');
 solve_btn.addEventListener('click', () => {
-    initialize();
-    iterate();
-    if(!found) alert("No Solution Found");
+    if (isValid()) {
+        initialize();
+        iterate();
+        if(!found) alert("No Solution Found");
+    }
 });
