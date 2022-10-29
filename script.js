@@ -21,6 +21,31 @@ for (let i = 0; i < 9; i++) {
     container.append(line);
 }
 
+// adding borders to the board
+for (let i = 0; i < 9; i++) {
+    for (let j = 0; j < 9; j += 3) {
+        board[i][j].style.borderLeftWidth = '3px';
+        board[j][i].style.borderTopWidth = '3px';
+    }
+    board[i][8].style.borderRightWidth = '4px';
+    board[8][i].style.borderBottomWidth ='4px';
+    board[i][0].style.borderLeftWidth = '4px';
+    board[0][i].style.borderTopWidth ='4px';
+}
+
+for (let i = 0; i < 9; i++) {
+    for (let j = 0; j < 9; j++) {
+        board[i][j].addEventListener('input', (event) => {
+            // Restrict character to be input.
+            val = board[i][j].value // get the character jus pressed
+            regex = /[1-9]/; //regex for 1-9 
+            if (!regex.test(val)) {
+                board[i][j].value ="";
+            }
+        });
+    }
+}
+
 // clear everything when click reset button
 reset_btn = document.querySelector('.reset-btn');
 reset_btn.addEventListener('click', () => {
