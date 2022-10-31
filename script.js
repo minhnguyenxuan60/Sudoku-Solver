@@ -21,6 +21,20 @@ for (let i = 0; i < 9; i++) {
     container.append(line);
 }
 
+function addAlert (i, j, k, l) {
+    board[i][j].style.backgroundColor = '#FFCCCB';
+    board[k][l].style.backgroundColor = '#FFCCCB';
+    let div = document.querySelector('.alert');
+    div.textContent = "Conflict with cell (" + k + ", " + l + ")";
+}
+
+function EraseAlert(i, j, k, l) {
+    board[i][j].style.backgroundColor = 'white';
+    board[k][l].style.backgroundColor = 'white';
+    board[i][j].value = "";
+    let div = document.querySelector('.alert');
+    div.textContent = "";
+}
 // adding borders to the board
 for (let i = 0; i < 9; i++) {
     for (let j = 0; j < 9; j += 3) {
@@ -33,6 +47,24 @@ for (let i = 0; i < 9; i++) {
     board[0][i].style.borderTopWidth ='4px';
 }
 
+function Valid (i, j, k, l) {
+    if (board[k][l].value == '') return;
+    if (i == k && j == l) return;
+    if(board[i][j].value == board[k][l].value) { 
+        if (i == k || j == l || 
+            (Math.floor(i / 3) == Math.floor(k / 3) && 
+            Math.floor(j / 3) == Math.floor(l / 3))) {
+            addAlert(i, j, k, l);
+            document.body.addEventListener('click', () => {
+                EraseAlert(i, j, k, l);
+            }, {once: true});
+            board[i][j].addEventListener('keydown', () => {
+                EraseAlert(i, j, k, l);
+            }, {once: true}); 
+            return ;
+        }
+    }
+}
 for (let i = 0; i < 9; i++) {
     for (let j = 0; j < 9; j++) {
         board[i][j].addEventListener('input', (event) => {
@@ -41,6 +73,13 @@ for (let i = 0; i < 9; i++) {
             regex = /[1-9]/; //regex for 1-9 
             if (!regex.test(val)) {
                 board[i][j].value ="";
+            }
+        });
+        board[i][j].addEventListener('input', () => {
+            for (let k = 0; k < 9; k++) {
+                for (let l = 0; l < 9; l++) {
+                    Valid(i, j, k, l);
+                }
             }
         });
     }
@@ -55,6 +94,7 @@ reset_btn.addEventListener('click', () => {
             board[i][j].style.color = 'black';
         }
     }
+
 })
 
 function change(i, j, val) {

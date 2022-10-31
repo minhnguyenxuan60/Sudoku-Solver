@@ -1,5 +1,5 @@
 body {
-    background-color:aqua;
+    background-color: lightskyblue;
 }
 
 .title {
@@ -57,4 +57,11 @@ button {
 .cell:hover {
     background-color: lightgray;
     color:white;
- }
+}
+
+.alert {
+    text-align: center;
+    justify-content: center;
+    font-size: larger;
+    color: red;
+}
