@@ -5,6 +5,7 @@ let okCol = new Array(9);
 let okBox = new Array(3);
 let  found = false;
 let st = new Set();
+let enableSolveBTN = true;
 for (let i = 0; i < 3; i++) okBox[i] = new Array(3);
 //draw the board
 for (let i = 0; i < 9; i++) {
@@ -22,6 +23,7 @@ for (let i = 0; i < 9; i++) {
 }
 
 function addAlert (i, j, k, l) {
+    enableSolveBTN = false;
     board[i][j].style.backgroundColor = '#FFCCCB';
     board[k][l].style.backgroundColor = '#FFCCCB';
     let div = document.querySelector('.alert');
@@ -29,6 +31,7 @@ function addAlert (i, j, k, l) {
 }
 
 function EraseAlert(i, j, k, l) {
+    enableSolveBTN = true;
     board[i][j].style.backgroundColor = 'white';
     board[k][l].style.backgroundColor = 'white';
     board[i][j].value = "";
@@ -178,35 +181,11 @@ function initialize() {
     }
 }
 
-// Check for conflict
-function isValid() {
-    for (let i = 0; i < 9; i++) {
-        for (let j = 0; j < 9; j++) {
-            if (board[i][j].value == '') continue;
-            for (let k = 0; k < 9; k++) {
-                for (let l = 0; l < 9; l++) {
-                    if (board[k][l].value == '') continue;
-                    if (i == k && j == l) continue;
-                    if(board[i][j].value == board[k][l].value) { 
-                        if (i == k || j == l || 
-                            (Math.floor(i / 3) == Math.floor(k / 3) && 
-                            Math.floor(j / 3) == Math.floor(l / 3))) {
-                            alert("Input conflict at cell ("+(i+1)+","+(j+1)+") and ("+(k+1)+","+(l+1)+")");
-                            return false;
-                        }
-                    }
-                }
-            }
-        }
-    }
-    return true;
-}
 //get the input from the board and solve the puzzle
 solve_btn = document.querySelector('.solve-btn');
 solve_btn.addEventListener('click', () => {
-    if (isValid()) {
-        initialize();
-        iterate();
-        if(!found) alert("No Solution Found");
-    }
+    if (!enableSolveBTN) return;
+    initialize();
+    iterate();
+    if(!found) alert("No Solution Found");
 });
